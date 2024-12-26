@@ -18,7 +18,7 @@
                         <div class="btn-container">
                             <el-button type="primary" :icon="Search" @click="handleSearch">查询</el-button>
                             <el-button :icon="Refresh" @click="handleReset">重置</el-button>
-                            <el-button type="success" :icon="Download" @click="handleDownload" v-if="export">导出</el-button>
+                            <el-button type="success" :icon="Download" @click="handleDownload" v-if="isExport">导出</el-button>
                             <el-button link type="primary" @click="handleCollapse" v-if="showCollapse">
                                 {{ isCollapse ? '展开' : '收起' }}
                                 <el-icon v-if="isCollapse" style="margin-left: 5px"><ArrowDownBold /></el-icon>
@@ -31,6 +31,11 @@
         </el-form>
     </div>
 </template>
+<script>
+export default {
+    name: "SearchForm"
+}
+</script>
 <script setup>
 import { Search, Refresh, ArrowUpBold, ArrowDownBold, Download } from '@element-plus/icons-vue';
 import SearchFormItem from './SearchFormItem.vue';
@@ -47,6 +52,7 @@ const props = defineProps({
     },
 });
 const emits = defineEmits(['search', 'export']);
+const isExport = computed(() => props.export)
 // 查询条件数据 -- 双向数据绑定
 const formData = defineModel();
 // 查询条件form实例

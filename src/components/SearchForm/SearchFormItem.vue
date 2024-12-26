@@ -15,16 +15,18 @@
                 v-bind="childProps"
                 v-for="(col, index) in optionsEnum"
                 :key="index"
+                :disabled="col.disabled"
                 :label="col[fieldNames.label]"
                 :value="col[fieldNames.value]"
             ></component>
         </template>
-        <template v-if="optionType == 'radio-group'">
+        <template v-if="optionType == 'radio-group' || optionType == 'checkbox-group'">
             <component
                 v-bind="childProps"
                 :is="childOptionType"
                 v-for="(col, index) in optionsEnum"
                 :key="index"
+                :disabled="col.disabled"
                 :value="col[fieldNames.value]"
                 :label="col[fieldNames.label]"
             ></component>
@@ -64,11 +66,14 @@ const fieldNames = computed(() => {
     };
 });
 const childOptionType = computed(() => {
+    let type = props.childConfig?.optionType || "";
     if (props.optionType === 'radio-group') {
-        let type = props.childConfig?.optionType ?? 'radio';
-        return `el-${type}`;
+        type = props.childConfig?.optionType ?? 'radio';
     }
-    return props.childConfig?.optionType;
+    if (props.optionType == 'checkbox-group') {
+        type = props.childConfig?.optionType ?? 'checkbox';
+    }
+   return `el-${type}`;
 });
 const childProps = computed(() => {
     return props.childConfig?.config ?? {};
@@ -81,6 +86,9 @@ const optionsEnum = computed(() => {
             return { ...item, label: item[fieldNames.value.label], value: item[fieldNames.value.value] };
         });
     }
+    list.forEach(item => {
+        item.disabled = item?.disabled || false
+    })
     return list;
 });
 
